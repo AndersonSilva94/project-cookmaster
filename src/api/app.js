@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const usersRoutes = require('../routes/usersRoute');
 const loginRoute = require('../routes/loginRoute');
 const recipesRoutes = require('../routes/recipesRoute');
@@ -17,6 +18,8 @@ app.get('/', (request, response) => {
 app.use('/users', usersRoutes);
 app.use('/login', loginRoute);
 app.use('/recipes', recipesRoutes);
+// ajuda de Lucas Godoi - Turma 10 Tribo A
+app.use('/images', express.static(path.join(__dirname, '..', 'uploads')));
 
 // middleware para tratamento de erro genérico
 app.use((err, _req, res, _next) => {
