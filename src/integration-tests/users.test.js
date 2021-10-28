@@ -26,8 +26,9 @@ describe('POST /users', () => {
       response = await chai.request(server).post('/users').send({});
     })
 
-    it('retorna status "400"', () => {
+    it('retorna status "400"', (done) => {
       expect(response).to.have.status(400);
+      done();
     });
     /* it('retorna um objeto no body', () => {
       expect(response.body).to.be.an('object');
@@ -35,8 +36,9 @@ describe('POST /users', () => {
     it('retorna um objeto com campo "message"', () => {
       expect(response.body).to.have.property('message');
     }); */
-    it('"message" tem o valor "Invalid entries. Try again."', () => {
+    it('"message" tem o valor "Invalid entries. Try again."', (done) => {
       expect(response.body.message).to.be.equals('Invalid entries. Try again.');
+      done();
     })
   });
 
@@ -65,11 +67,13 @@ describe('POST /users', () => {
       });
     })
 
-    it('retorna status "409"', () => {
+    it('retorna status "409"', (done) => {
       expect(response).to.have.status(409);
+      done();
     });
-    it('"message" tem o valor "Email already registered"', () => {
+    it('"message" tem o valor "Email already registered"', (done) => {
       expect(response.body.message).to.be.equals('Email already registered');
+      done();
     })
   });
 
@@ -100,8 +104,9 @@ describe('POST /users', () => {
       });
     })
 
-    it('retorna status "201"', () => {
+    it('retorna status "201"', (done) => {
       expect(response).to.have.status(201);
+      done();
     });
     /* it('retorna o objeto "user"', () => {
       const objUser = {
