@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const usersRoutes = require('../routes/usersRoute');
+const loginRoute = require('../routes/loginRoute');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -13,6 +14,7 @@ app.get('/', (request, response) => {
 // Não remover esse end-point, ele é necessário para o avaliador
 
 app.use('/users', usersRoutes);
+app.use('/login', loginRoute);
 
 // middleware para tratamento de erro genérico
 app.use((err, _req, res, _next) => {
