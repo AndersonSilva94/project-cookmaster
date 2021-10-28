@@ -1,6 +1,6 @@
 const verifyRecipe = require('../auth/verifyRecipe');
-const { createRecipe } = require('../models/recipesModel');
-const { CREATED } = require('../utils/statusSuccess');
+const { createRecipe, getAllRecipes } = require('../models/recipesModel');
+const { CREATED, STATUS_OK } = require('../utils/statusSuccess');
 
 const create = async (name, ingredients, preparation, user) => {
   const verifyEmptyFields = await verifyRecipe(name, ingredients, preparation);
@@ -9,4 +9,12 @@ const create = async (name, ingredients, preparation, user) => {
   return { status: CREATED, message: response };
 };
 
-module.exports = create;
+const getAll = async () => {
+  const getRecipes = await getAllRecipes();
+  return { status: STATUS_OK, message: getRecipes };
+};
+
+module.exports = {
+  create,
+  getAll,
+};
