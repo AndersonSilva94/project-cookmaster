@@ -1,9 +1,10 @@
 const create = require('../services/recipesService');
 
 const createRecipe = async (request, response, next) => {
+  const { user } = request;
+  const { name, ingredients, preparation } = request.body;
+  console.log(user);
   try {
-    const { user } = request;
-    const { name, ingredients, preparation } = request.body;
     const validyRecipe = await create(name, ingredients, preparation, user);
 
     return response.status(validyRecipe.status).json(validyRecipe.message);

@@ -7,10 +7,10 @@ const { secret } = require('../utils/tokenConfigs');
 
 const verifyToken = async (request, response, next) => {
   const token = request.headers.authorization;
+  console.log(token);
 
   try {
     const payload = jwt.verify(token, secret);
-
     const user = await findEmail(payload.email);
 
     if (!user) throw invalidUser;
@@ -20,7 +20,7 @@ const verifyToken = async (request, response, next) => {
     request.user = userWithoutPassword;
     next();
   } catch (err) {
-    return { status: UNAUTHORIZED, message: INVALID_JWT };
+    return next({ status: UNAUTHORIZED, message: INVALID_JWT });
   }
 };
 

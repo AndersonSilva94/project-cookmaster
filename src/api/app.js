@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const usersRoutes = require('../routes/usersRoute');
 const loginRoute = require('../routes/loginRoute');
+const recipesRoutes = require('../routes/recipesRoute');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,6 +16,7 @@ app.get('/', (request, response) => {
 
 app.use('/users', usersRoutes);
 app.use('/login', loginRoute);
+app.use('/recipes', recipesRoutes);
 
 // middleware para tratamento de erro genérico
 app.use((err, _req, res, _next) => {
