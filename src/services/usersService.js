@@ -2,7 +2,6 @@ const verifyEmail = require('../auth/verifyEmailUsers');
 const verifyName = require('../auth/verifyNameUsers');
 const verifyPassword = require('../auth/verifyPasswordUsers');
 const { createUser } = require('../models/usersModel');
-const { forbiddenMsg } = require('../utils/messages');
 const { CREATED } = require('../utils/statusSuccess');
 
 const create = async (name, email, password, role) => {
@@ -14,14 +13,13 @@ const create = async (name, email, password, role) => {
   return { status: CREATED, message: response };
 };
 
-const createAdmin = async (name, email, password, role) => {
-  if (role !== 'admin') throw forbiddenMsg;
+/* const createAdmin = async (name, email, password, role) => {
   const createU = await createUser(name, email, password, role);
   const response = { user: { ...createU } };
   return { status: CREATED, message: response };
-};
+}; */
 
 module.exports = {
   create,
-  createAdmin,
+  /* createAdmin, */
 };
