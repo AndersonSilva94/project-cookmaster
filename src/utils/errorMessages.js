@@ -3,8 +3,8 @@ const DUPLICITY_EMAIL = 'Email already registered';
 const FILLED_FIELDS = 'All fields must be filled';
 const INCORRECT_LOGIN = 'Incorrect username or password';
 const INVALID_USER = 'Invalid user';
-const INVALID_JWT = 'jwt malformed';
 const RECIPE_FOUND = 'recipe not found';
+const MISSING_TOKEN = 'missing auth token';
 
 module.exports = {
   INVALID_ENTRIES,
@@ -12,6 +12,6 @@ module.exports = {
   FILLED_FIELDS,
   INCORRECT_LOGIN,
   INVALID_USER,
-  INVALID_JWT,
   RECIPE_FOUND,
+  MISSING_TOKEN,
 };
