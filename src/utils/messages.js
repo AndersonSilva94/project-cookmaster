@@ -5,8 +5,9 @@ const {
   INCORRECT_LOGIN,
   INVALID_USER,
   RECIPE_FOUND,
-  MISSING_TOKEN } = require('./errorMessages');
-const { BAD_REQUEST, CONFLICT, UNAUTHORIZED, NOT_FOUND } = require('./statusErrors');
+  MISSING_TOKEN,
+  ADMIN } = require('./errorMessages');
+const { BAD_REQUEST, CONFLICT, UNAUTHORIZED, NOT_FOUND, FORBIDDEN } = require('./statusErrors');
 
 const badRequest = { status: BAD_REQUEST, message: INVALID_ENTRIES };
 const conflict = { status: CONFLICT, message: DUPLICITY_EMAIL };
@@ -15,6 +16,7 @@ const incorrectLogin = { status: UNAUTHORIZED, message: INCORRECT_LOGIN };
 const invalidUser = { status: UNAUTHORIZED, message: INVALID_USER };
 const notFound = { status: NOT_FOUND, message: RECIPE_FOUND };
 const missingToken = { status: UNAUTHORIZED, message: MISSING_TOKEN };
+const forbiddenMsg = { status: FORBIDDEN, message: ADMIN };
 
 module.exports = {
   badRequest,
@@ -24,4 +26,5 @@ module.exports = {
   invalidUser,
   notFound,
   missingToken,
+  forbiddenMsg,
 };

@@ -5,6 +5,7 @@ const INCORRECT_LOGIN = 'Incorrect username or password';
 const INVALID_USER = 'Invalid user';
 const RECIPE_FOUND = 'recipe not found';
 const MISSING_TOKEN = 'missing auth token';
+const ADMIN = 'Only admins can register new admins';
 
 module.exports = {
   INVALID_ENTRIES,
@@ -14,4 +15,5 @@ module.exports = {
   INVALID_USER,
   RECIPE_FOUND,
   MISSING_TOKEN,
+  ADMIN,
 };
