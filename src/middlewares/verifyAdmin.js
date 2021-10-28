@@ -1,10 +1,11 @@
 const { forbiddenMsg } = require('../utils/messages');
 
-const verifyAdmin = (request, response, next) => {
-  const { role } = request.body;
+const verifyAdmin = async (request, response, next) => {
+  const { user } = request;
   try {
-    if (!role || role !== 'admin') throw forbiddenMsg;
+    if (!user.role || user.role !== 'admin') throw forbiddenMsg;
 
+    request.body.role = user.role;
     next();
   } catch (err) {
     return next(err);

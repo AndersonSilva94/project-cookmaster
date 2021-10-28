@@ -1,5 +1,5 @@
 const express = require('express');
-const verifyToken = require('../auth/verifyToken');
+const verifyToken = require('../middlewares/verifyToken');
 const { createRecipe, getAllRecipes,
   getRecipeById, editRecipe, deleteRecipe } = require('../controllers/recipesController');
 const { uploadImg } = require('../controllers/uploadsController');
