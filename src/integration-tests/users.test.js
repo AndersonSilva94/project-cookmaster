@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const server = require('../api/app');
 const { MongoClient, ObjectId } = require('mongodb');
 const { getConnection } = require('./connectionMocks');
+const { userObj } = require('../utils/mocksObjects');
 
 describe('POST /users', () => {
   let connectionMock;
@@ -41,17 +42,9 @@ describe('POST /users', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSuperSecreta',
-      });
+      await usersCollection.insertOne(userObj);
 
-      response = await chai.request(server).post('/users').send({
-        name: 'Andy',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      })
+      response = await chai.request(server).post('/users').send(userObj)
     });
 
     after(async () => {
@@ -75,11 +68,7 @@ describe('POST /users', () => {
     let response;
 
     before(async () => {
-      response = await chai.request(server).post('/users').send({
-        name: 'Andy',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      response = await chai.request(server).post('/users').send(userObj);
 
     });
 

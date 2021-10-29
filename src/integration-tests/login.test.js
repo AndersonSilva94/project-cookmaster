@@ -6,6 +6,8 @@ const sinon = require('sinon');
 const server = require('../api/app');
 const { MongoClient, ObjectId } = require('mongodb');
 const { getConnection } = require('./connectionMocks');
+const { userObj, emailError,
+  passwordError, correctLogin } = require('../utils/mocksObjects');
 
 describe('POST /login', () => {
   let connectionMock;
@@ -41,16 +43,9 @@ describe('POST /login', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
-      response = await chai.request(server).post('/login').send({
-        email: 'and@teste.com',
-        password: 'senhaSuperSecretaAndy'
-      });
+      response = await chai.request(server).post('/login').send(emailError);
     });
 
     after(async () => {
@@ -75,16 +70,9 @@ describe('POST /login', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
-      response = await chai.request(server).post('/login').send({
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecreta'
-      });
+      response = await chai.request(server).post('/login').send(passwordError);
     });
 
     after(async () => {
@@ -109,16 +97,9 @@ describe('POST /login', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
-      response = await chai.request(server).post('/login').send({
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy'
-      });
+      response = await chai.request(server).post('/login').send(correctLogin);
     });
 
     after(async () => {

@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const server = require('../api/app');
 const { MongoClient, ObjectId } = require('mongodb');
 const { getConnection } = require('./connectionMocks');
+const { userObj, correctLogin, recipeObj } = require('../utils/mocksObjects');
 
 describe('POST /recipes', () => {
   let connectionMock;
@@ -24,16 +25,9 @@ describe('POST /recipes', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
-      const { body: { token } } = await chai.request(server).post('/login').send({
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy'
-      });
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
 
       // console.log(token);
       // .set({ Authorization: `Bearer ${token}` })
@@ -67,11 +61,7 @@ describe('POST /recipes', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
       response = await chai.request(server).post('/recipes').set('Authorization', 'erer')
         .send({})
@@ -99,23 +89,12 @@ describe('POST /recipes', () => {
 
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      await usersCollection.insertOne({
-        name: 'Andy Silva',
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy',
-      });
+      await usersCollection.insertOne(userObj);
 
-      const { body: { token } } = await chai.request(server).post('/login').send({
-        email: 'andy@teste.com',
-        password: 'senhaSuperSecretaAndy'
-      });
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
 
       response = await chai.request(server).post('/recipes').set('Authorization', token)
-        .send({
-          name: 'Bolo de chocolate',
-          ingredients: 'Trigo, chocolate, ovo, manteiga',
-          preparation: '10 min no forno'
-        })
+        .send(recipeObj)
     });
 
     after(async () => {
