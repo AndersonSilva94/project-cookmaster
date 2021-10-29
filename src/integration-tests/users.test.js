@@ -30,12 +30,6 @@ describe('POST /users', () => {
       expect(response).to.have.status(400);
       done();
     });
-    /* it('retorna um objeto no body', () => {
-      expect(response.body).to.be.an('object');
-    });
-    it('retorna um objeto com campo "message"', () => {
-      expect(response.body).to.have.property('message');
-    }); */
     it('"message" tem o valor "Invalid entries. Try again."', (done) => {
       expect(response.body.message).to.be.equals('Invalid entries. Try again.');
       done();
@@ -79,7 +73,6 @@ describe('POST /users', () => {
 
   describe('Valida que é possível cadastrar usuário com sucesso', () => {
     let response;
-    let idUser;
 
     before(async () => {
       response = await chai.request(server).post('/users').send({
@@ -87,13 +80,6 @@ describe('POST /users', () => {
         email: 'andy@teste.com',
         password: 'senha123',
       });
-
-      const usersCollection = connectionMock.db('Cookmaster').collection('users');
-      const findRecipe = await usersCollection.findOne({
-        email: 'andy@teste.com'
-      });
-      // console.log(findRecipe)
-      idUser = findRecipe._id
 
     });
 
@@ -108,16 +94,8 @@ describe('POST /users', () => {
       expect(response).to.have.status(201);
       done();
     });
-    /* it('retorna o objeto "user"', () => {
-      const objUser = {
-        user: {
-          name: 'Andy',
-          email: 'andy@teste.com',
-          role: 'user',
-          _id: ObjectId(idUser)
-        }
-      }
-      expect(response.body).to.be.equals(objUser);
-    }) */
+    it('retorna o objeto "user"', () => {
+      expect(response.body.user).to.have.keys(['name', 'email', 'role', '_id']);
+    })
   })
 })
