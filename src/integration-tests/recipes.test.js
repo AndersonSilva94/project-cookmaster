@@ -9,6 +9,8 @@ const { getConnection } = require('./connectionMocks');
 const { userObj, correctLogin,
   recipeObj, recipeObjModify, adminObj, correctLoginAdmin } = require('../utils/mocksObjects');
 
+// POST /recipes *******************************************************
+
 describe('POST /recipes', () => {
   let connectionMock;
 
@@ -116,6 +118,8 @@ describe('POST /recipes', () => {
   });
 });
 
+// GET /recipes *******************************************************
+
 describe('GET /recipes', () => {
   let connectionMock;
 
@@ -195,6 +199,8 @@ describe('GET /recipes', () => {
     });
   });
 });
+
+// GET /recipes/:id *******************************************************
 
 describe('GET /recipes/:id', () => {
   let connectionMock;
@@ -303,6 +309,8 @@ describe('GET /recipes/:id', () => {
     });
   });
 });
+
+// PUT /recipes/:id *******************************************************
 
 describe('PUT /recipes/:id', () => {
   let connectionMock;
@@ -450,6 +458,8 @@ describe('PUT /recipes/:id', () => {
     });
   });
 });
+
+// DELETE /recipes/:id *******************************************************
 
 describe('DELETE /recipes/:id', () => {
   let connectionMock;
