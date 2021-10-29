@@ -435,7 +435,7 @@ describe('PUT /recipes/:id', () => {
     after(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
       await usersCollection.deleteOne({
-        email: 'andy@teste.com'
+        email: adminObj.email
       });
     });
 
@@ -446,6 +446,118 @@ describe('PUT /recipes/:id', () => {
     it('retorna as informações da receita modificada', (done) => {
       expect(response.body).to.have.all
         .keys(['name', 'ingredients', 'preparation', '_id', 'userId']);
+      done();
+    });
+  });
+});
+
+describe('DELETE /recipes/:id', () => {
+  let connectionMock;
+
+  before(async () => {
+    connectionMock = await getConnection();
+    sinon.stub(MongoClient, 'connect').resolves(connectionMock);
+  });
+
+  after(() => {
+    MongoClient.connect.restore();
+  });
+
+  describe('Valida que não é possível excluir uma receita sem autenticação', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(userObj);
+
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).delete(`/recipes/${idRecipe}`)
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "401"', (done) => {
+      expect(response).to.have.status(401);
+      done();
+    });
+    it('"message" tem o valor "missing auth token"', (done) => {
+      expect(response.body.message).to.be.equals('missing auth token');
+      done();
+    });
+  });
+
+  describe('Valida que é possível excluir uma receita com autenticação', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(userObj);
+
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).delete(`/recipes/${idRecipe}`)
+        .set('Authorization', token)
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "204"', (done) => {
+      expect(response).to.have.status(204);
+      done();
+    });
+    it('o corpo retorna vazio', (done) => {
+      expect(response.body).to.be.empty;
+      done();
+    });
+  });
+
+  describe('Valida que é possível excluir uma receita com usuário admin', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(adminObj);
+
+      const { body: { token } } = await chai.request(server).post('/login')
+        .send(correctLoginAdmin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).delete(`/recipes/${idRecipe}`)
+        .set('Authorization', token)
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: adminObj.email
+      });
+    });
+
+    it('retorna status "204"', (done) => {
+      expect(response).to.have.status(204);
+      done();
+    });
+    it('o corpo retorna vazio', (done) => {
+      expect(response.body).to.be.empty;
       done();
     });
   });
