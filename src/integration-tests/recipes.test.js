@@ -6,7 +6,8 @@ const sinon = require('sinon');
 const server = require('../api/app');
 const { MongoClient, ObjectId } = require('mongodb');
 const { getConnection } = require('./connectionMocks');
-const { userObj, correctLogin, recipeObj } = require('../utils/mocksObjects');
+const { userObj, correctLogin,
+  recipeObj, recipeObjModify, adminObj, correctLoginAdmin } = require('../utils/mocksObjects');
 
 describe('POST /recipes', () => {
   let connectionMock;
@@ -298,6 +299,153 @@ describe('GET /recipes/:id', () => {
     });
     it('"message" tem o valor "recipe not found"', (done) => {
       expect(response.body.message).to.be.equals('recipe not found');
+      done();
+    });
+  });
+});
+
+describe('PUT /recipes/:id', () => {
+  let connectionMock;
+
+  before(async () => {
+    connectionMock = await getConnection();
+    sinon.stub(MongoClient, 'connect').resolves(connectionMock);
+  });
+
+  after(() => {
+    MongoClient.connect.restore();
+  });
+
+  describe('Valida que não é possível editar uma receita sem autenticação', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(userObj);
+
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).put(`/recipes/${idRecipe}`)
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "401"', (done) => {
+      expect(response).to.have.status(401);
+      done();
+    });
+    it('"message" tem o valor "missing auth token"', (done) => {
+      expect(response.body.message).to.be.equals('missing auth token');
+      done();
+    });
+  });
+
+  describe('Valida que não é possível editar uma receita com token inválido', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(userObj);
+
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).put(`/recipes/${idRecipe}`)
+        .set('Authorization', 'erer');
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "401"', (done) => {
+      expect(response).to.have.status(401);
+      done();
+    });
+    it('"message" tem o valor "jwt malformed"', (done) => {
+      expect(response.body.message).to.be.equals('jwt malformed');
+      done();
+    });
+  });
+
+  describe('Valida que é possível editar uma receita autenticado', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(userObj);
+
+      const { body: { token } } = await chai.request(server).post('/login').send(correctLogin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).put(`/recipes/${idRecipe}`)
+        .set('Authorization', token).send(recipeObjModify);
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "200"', (done) => {
+      expect(response).to.have.status(200);
+      done();
+    });
+    it('retorna as informações da receita modificada', (done) => {
+      expect(response.body).to.have.all
+        .keys(['name', 'ingredients', 'preparation', '_id', 'userId']);
+      done();
+    });
+  });
+
+  describe('Valida que é possível editar uma receita com usuário admin', () => {
+    let response;
+
+    before(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.insertOne(adminObj);
+
+      const { body: { token } } = await chai.request(server).post('/login')
+        .send(correctLoginAdmin);
+
+      const { body: { recipe: { _id: idRecipe } } } = await chai.request(server)
+        .post('/recipes').set('Authorization', token).send(recipeObj)
+
+      response = await chai.request(server).put(`/recipes/${idRecipe}`)
+        .set('Authorization', token).send(recipeObjModify);
+    });
+
+    after(async () => {
+      const usersCollection = connectionMock.db('Cookmaster').collection('users');
+      await usersCollection.deleteOne({
+        email: 'andy@teste.com'
+      });
+    });
+
+    it('retorna status "200"', (done) => {
+      expect(response).to.have.status(200);
+      done();
+    });
+    it('retorna as informações da receita modificada', (done) => {
+      expect(response.body).to.have.all
+        .keys(['name', 'ingredients', 'preparation', '_id', 'userId']);
       done();
     });
   });
