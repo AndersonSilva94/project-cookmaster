@@ -50,7 +50,7 @@ describe('POST /users', () => {
       response = await chai.request(server).post('/users').send({
         name: 'Andy',
         email: 'andy@teste.com',
-        password: 'senha123',
+        password: 'senhaSuperSecretaAndy',
       })
     });
 
@@ -78,7 +78,7 @@ describe('POST /users', () => {
       response = await chai.request(server).post('/users').send({
         name: 'Andy',
         email: 'andy@teste.com',
-        password: 'senha123',
+        password: 'senhaSuperSecretaAndy',
       });
 
     });
@@ -94,8 +94,11 @@ describe('POST /users', () => {
       expect(response).to.have.status(201);
       done();
     });
+
+    // como verificar se o objeto tem as chaves encontrado no link:
+    // https://stackoverflow.com/questions/48720106/chai-check-object-contains-only-keys
     it('retorna o objeto "user"', () => {
-      expect(response.body.user).to.have.keys(['name', 'email', 'role', '_id']);
+      expect(response.body.user).to.have.all.keys(['name', 'email', 'role', '_id']);
     })
   })
 })
