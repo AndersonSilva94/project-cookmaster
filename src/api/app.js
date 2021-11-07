@@ -18,7 +18,6 @@ app.get('/', (request, response) => {
 app.use('/users', usersRoutes);
 app.use('/login', loginRoute);
 app.use('/recipes', recipesRoutes);
-// ajuda de Lucas Godoi - Turma 10 Tribo A
 app.use('/images', express.static(path.join(__dirname, '..', 'uploads')));
 
 // middleware para tratamento de erro genérico
